@@ -1,0 +1,33 @@
+{
+  "name": "koa-sbv",
+  "version": "0.0.1",
+  "description": "Simple and concise body validation middleware for koa",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danroshko/koa-sbv.git"
+  },
+  "keywords": [
+    "koa",
+    "validate"
+  ],
+  "author": "Danil Roshko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danroshko/koa-sbv/issues"
+  },
+  "homepage": "https://github.com/danroshko/koa-sbv#readme",
+  "devDependencies": {
+    "eslint": "^4.2.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.6.1",
+    "eslint-plugin-node": "^5.1.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "jest": "^20.0.4",
+    "prettier": "^1.5.2"
+  }
+}
