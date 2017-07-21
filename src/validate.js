@@ -5,6 +5,9 @@ module.exports = function (spec) {
   const ctx = this
   const data = ctx.request.body
 
+  const isEmpty = Object.keys(data).length === 0
+  ctx.assert(!isEmpty, 400, 'Empty request body')
+
   try {
     ctx.request.body = validate(data, spec)
   } catch (err) {
@@ -21,11 +24,11 @@ function validate (data, spec, name) {
     const required = spec.endsWith('!')
     spec = spec.replace('!', '')
 
-    if (!data && !required) return null
+    if (data == null && !required) return null
 
     const validator = validators[spec]
     if (typeof validator !== 'function') {
-      error('Unknown validator ' + spec)
+      internalError('Unknown validator ' + spec)
     }
 
     validator(data, name)
@@ -50,7 +53,7 @@ function validate (data, spec, name) {
 
   if (typeof spec === 'object' && spec != null) {
     const result = {}
-    const msg = `expecting ${name || 'ctx.request.body'} to be object`
+    const msg = `expecting ${name} to be an object`
     assert(typeof data === 'object', msg)
 
     for (let prop in spec) {
@@ -63,10 +66,10 @@ function validate (data, spec, name) {
     return result
   }
 
-  error('Check your specification for ' + name)
+  internalError('Check your specification for ' + name)
 }
 
-function error (message) {
+function internalError (message) {
   const err = new Error(message)
   err.status = 500
   throw err

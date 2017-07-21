@@ -9,12 +9,22 @@ function makeCtx (body) {
     throw (status, msg) {
       throw new Error(msg)
     },
+    assert (value, status, message) {
+      assert(value, message)
+    },
     request: { body }
   }
 }
 
 test('basic validation', () => {
-  const data = { a: 'a', b: 'b', c: 12.34, d: 7 }
+  const data = {
+    a: 'a',
+    b: 'b',
+    c: 12.34,
+    d: 7,
+    f: false,
+    g: 'aaaaaaaaaaaaaaaaaaaaaaaa'
+  }
   const ctx = makeCtx(data)
 
   ctx.validate({
@@ -22,7 +32,9 @@ test('basic validation', () => {
     b: 'string',
     c: 'number',
     d: 'int',
-    e: 'string'
+    e: 'string',
+    f: 'boolean',
+    g: 'ObjectId'
   })
 
   expect(ctx.request.body).toEqual(data)

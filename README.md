@@ -1,11 +1,10 @@
 # koa-sbv
-Request body validation middleware for koa2
-* validates arrays and objects that can be arbitrarily nested
-* removes unspecified properties from request body
+Request body validation middleware for koa2. Check [koa-validate](https://github.com/RocksonZeta/koa-validate) if you need more thorough validation, use this package if you need to validate nested arrays and objects or don't like the verbosity of other packages.
+
 
 ## Installation
 ```bash
-$ npm install danroshko/koa-sbv --save
+$ npm install koa-sbv --save
 ```
 
 ## Usage
@@ -17,10 +16,10 @@ const router = require('koa-router')
 
 const app = new Koa()
 
-app.use(parser({ urlencoded: false })).use(validate)
+app.use(parser()).use(validate)
 
 router.post('/books', async ctx => {
-  // if validation fails throws an error with 400 status code and helpful error message
+  // if validation fails throws an error with 400 status code and helpful message
   ctx.validate({
     title: 'string!',                     // required
     subtitle: 'string',                   // optional
@@ -45,9 +44,11 @@ app.listen(3000)
 * string
 * email
 * number
-* percent
-* int
-* uint
+* boolean
+* percent - number between 0 and 100
+* int - integer
+* uint - non-negative integer
+* ObjectId - mongodb ObjectId
 
 ## Adding your own validators
 ```javascript

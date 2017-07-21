@@ -36,5 +36,16 @@ module.exports = {
     const msg = `Invalid value for ${name}, expecting number in range from 0 to 100`
     const isValid = typeof val === 'number' && val >= 0 && val <= 100
     assert(isValid, msg)
+  },
+
+  boolean (val, name) {
+    const msg = `Invalid value for ${name}, expecting boolean`
+    assert(typeof val === 'boolean', msg)
+  },
+
+  ObjectId (val, name) {
+    const msg = `Invalid value for ${name}, expecting 24 digit hexadecimal string`
+    const re = /^[0-9a-fA-F]{24}$/
+    assert(typeof val === 'string' && re.test(val), msg)
   }
 }
