@@ -47,5 +47,15 @@ module.exports = {
     const msg = `Invalid value for ${name}, expecting 24 digit hexadecimal string`
     const re = /^[0-9a-fA-F]{24}$/
     assert(typeof val === 'string' && re.test(val), msg)
+  },
+
+  object (val, name) {
+    const msg = `Invalid value for ${name}, expecting object`
+    assert(typeof val === 'object' && val != null, msg)
+  },
+
+  array (val, name) {
+    const msg = `Invalid value for ${name}, expecting array`
+    assert(Array.isArray(val), msg)
   }
 }

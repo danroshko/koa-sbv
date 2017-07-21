@@ -49,18 +49,21 @@ app.listen(3000)
 * int - integer
 * uint - non-negative integer
 * ObjectId - mongodb ObjectId
+* object - object with arbitrary structure
+* array
 
 ## Adding your own validators
 ```javascript
 const validate = require('koa-sbv')
-const assert = require('assert')
 
 validate.validators.evenNumber = function(val, name) {
   const isValid = typeof val === 'number' && val % 2 === 0
-  assert(isValid, `Ivalid value for ${name}: expecting even number`)
+  if (!isValid) {
+    throw new Error(`Ivalid value for ${name}: expecting even number`)
+  }
 }
 
-app.use(parser({ urlencoded: false })).use(validate)
+app.use(parser()).use(validate)
 
 router.post('/numbers', async ctx => {
   ctx.validate({
