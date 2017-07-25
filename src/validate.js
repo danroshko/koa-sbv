@@ -1,34 +1,40 @@
-const assert = require('assert')
+const assert = require('./assert')
 const validators = require('./validators')
+const { Maybe } = require('./maybe')
+const { Range, validateRange } = require('./range')
 
 module.exports = function (spec) {
   const ctx = this
   const data = ctx.request.body
 
-  const isEmpty = Object.keys(data).length === 0
-  ctx.assert(!isEmpty, 400, 'Empty request body')
+  const isEmpty = !data || Object.keys(data).length === 0
+  assert(!isEmpty, 'Empty request body')
 
-  try {
-    ctx.request.body = validate(data, spec)
-  } catch (err) {
-    if (err.status !== 500) {
-      ctx.throw(400, err.message)
-    } else {
-      throw err
-    }
-  }
+  ctx.request.body = validate(data, spec)
 }
 
 function validate (data, spec, name) {
+  if (spec instanceof Maybe) {
+    spec = spec.value
+    if (data == null) return null
+  }
+
+  assert(data != null, `Missing required parameter ${name}`)
+
+  if (spec instanceof Range) {
+    return validateRange(data, spec, name)
+  }
+
+  if (spec instanceof RegExp) {
+    const msg = `Invalid value for ${name}, expecting string ${spec}`
+    assert(typeof data === 'string' && spec.test(data), msg)
+    return data
+  }
+
   if (typeof spec === 'string') {
-    const required = spec.endsWith('!')
-    spec = spec.replace('!', '')
-
-    if (data == null && !required) return null
-
     const validator = validators[spec]
     if (typeof validator !== 'function') {
-      internalError('Unknown validator ' + spec)
+      throw new Error('Unknown validator ' + spec)
     }
 
     validator(data, name)
@@ -51,7 +57,7 @@ function validate (data, spec, name) {
     })
   }
 
-  if (typeof spec === 'object' && spec != null) {
+  if (typeof spec === 'object') {
     const result = {}
     const msg = `expecting ${name} to be an object`
     assert(typeof data === 'object', msg)
@@ -66,11 +72,5 @@ function validate (data, spec, name) {
     return result
   }
 
-  internalError('Check your specification for ' + name)
-}
-
-function internalError (message) {
-  const err = new Error(message)
-  err.status = 500
-  throw err
+  throw new Error('Check your specification for ' + name)
 }

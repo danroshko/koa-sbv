@@ -1,17 +1,11 @@
 /* global test, expect */
-const assert = require('assert')
 const validate = require('../src/validate')
-const validators = require('../src/validators')
+const { range } = require('../src/range')
+const { maybe } = require('../src/maybe')
 
 function makeCtx (body) {
   return {
     validate: validate,
-    throw (status, msg) {
-      throw new Error(msg)
-    },
-    assert (value, status, message) {
-      assert(value, message)
-    },
     request: { body }
   }
 }
@@ -19,22 +13,23 @@ function makeCtx (body) {
 test('basic validation', () => {
   const data = {
     a: 'a',
-    b: 'b',
-    c: 12.34,
-    d: 7,
-    f: false,
-    g: 'aaaaaaaaaaaaaaaaaaaaaaaa'
+    b: 12.34,
+    c: -73253453,
+    d: 11,
+    e: false,
+    f: 'aaaaaaaaaaaaaaaaaaaaaaaa',
+    g: '456789'
   }
   const ctx = makeCtx(data)
 
   ctx.validate({
-    a: 'string!',
-    b: 'string',
-    c: 'number',
-    d: 'int',
-    e: 'string',
-    f: 'boolean',
-    g: 'ObjectId'
+    a: 'string',
+    b: 'number',
+    c: 'int',
+    d: 'uint',
+    e: 'boolean',
+    f: 'ObjectId',
+    g: /^\d+$/
   })
 
   expect(ctx.request.body).toEqual(data)
@@ -52,11 +47,11 @@ test('nested validation', () => {
   const ctx = makeCtx(data)
 
   ctx.validate({
-    title: 'string!',
+    title: 'string',
     subtitle: 'string',
-    pages: 'uint!',
+    pages: 'uint',
     tags: ['string', 1, 5],
-    authors: [{ name: 'string!', emails: ['email'] }]
+    authors: [{ name: 'string', emails: ['email'] }]
   })
 
   expect(ctx.request.body).toEqual(data)
@@ -70,7 +65,7 @@ test('filters unspecified properties', () => {
   })
 
   ctx.validate({
-    a: 'string!',
+    a: 'string',
     b: { c: 'number' }
   })
 
@@ -80,18 +75,39 @@ test('filters unspecified properties', () => {
   })
 })
 
-test('custom validators', () => {
-  validators.evenNumber = function (val, name) {
-    const isValid = typeof val === 'number' && val % 2 === 0
-    assert(isValid, `Ivalid value for ${name}: expecting even number`)
-  }
+test('range', () => {
+  const ctx = makeCtx({
+    a: 0.33333333333,
+    b: 42
+  })
 
-  const data = { numbers: [2, 4, 8] }
-  const ctx = makeCtx(data)
+  ctx.validate({
+    a: range(0, 1),
+    b: range(0, 100, true)
+  })
 
-  ctx.validate({ numbers: ['evenNumber', 3, 3] })
+  expect(ctx.request.body).toEqual({
+    a: 0.33333333333,
+    b: 42
+  })
+})
 
-  expect(ctx.request.body).toEqual(data)
+test('maybe', () => {
+  const ctx = makeCtx({
+    a: '123',
+    c: { d: ['d'] }
+  })
+
+  ctx.validate({
+    a: maybe('string'),
+    b: maybe(['uint']),
+    c: { d: maybe(['string']) }
+  })
+
+  expect(ctx.request.body).toEqual({
+    a: '123',
+    c: { d: ['d'] }
+  })
 })
 
 test('required parameters', () => {
@@ -99,10 +115,10 @@ test('required parameters', () => {
 
   expect(() => {
     ctx.validate({
-      a: 'int!',
-      b: { c: 'int!', d: 'int!' }
+      a: 'int',
+      b: { c: 'int', d: 'int' }
     })
-  }).toThrow('Invalid value for b.d, expecting integer')
+  }).toThrow('Missing required parameter b.d')
 })
 
 test('wrong parameter type', () => {
@@ -119,4 +135,12 @@ test('array length', () => {
   expect(() => {
     ctx.validate({ a: ['int', 5] })
   }).toThrow('expecting a to contain no less than 5 elements')
+})
+
+test('out of range', () => {
+  const ctx = makeCtx({ a: 31 })
+
+  expect(() => {
+    ctx.validate({ a: range(20, 30) })
+  }).toThrow('Invalid value for a, expecting number from 20 to 30')
 })
