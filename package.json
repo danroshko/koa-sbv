@@ -1,6 +1,6 @@
 {
   "name": "koa-sbv",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Simple and concise body validation middleware for koa",
   "main": "index.js",
   "scripts": {
