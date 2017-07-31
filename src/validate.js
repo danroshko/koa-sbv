@@ -2,6 +2,7 @@ const assert = require('./assert')
 const validators = require('./validators')
 const { Maybe } = require('./maybe')
 const { Range, validateRange } = require('./range')
+const { Either, validateEither } = require('./either')
 
 module.exports = function (spec) {
   const ctx = this
@@ -23,6 +24,10 @@ function validate (data, spec, name) {
 
   if (spec instanceof Range) {
     return validateRange(data, spec, name)
+  }
+
+  if (spec instanceof Either) {
+    return validateEither(data, spec, name)
   }
 
   if (spec instanceof RegExp) {

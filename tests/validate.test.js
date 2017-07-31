@@ -2,6 +2,7 @@
 const validate = require('../src/validate')
 const { range } = require('../src/range')
 const { maybe } = require('../src/maybe')
+const { either } = require('../src/either')
 
 function makeCtx (body) {
   return {
@@ -143,4 +144,18 @@ test('out of range', () => {
   expect(() => {
     ctx.validate({ a: range(20, 30) })
   }).toThrow('Invalid value for a, expecting number from 20 to 30')
+})
+
+test('either', () => {
+  const ctx = makeCtx({ a: 'yes' })
+
+  ctx.validate({
+    a: either('yes', 'no', true, false)
+  })
+
+  expect(ctx.request.body).toEqual({ a: 'yes' })
+
+  expect(() => {
+    ctx.validate({ a: either(1, 2) })
+  }).toThrow('Invalid value for a, expecting one of the following: 1,2')
 })
