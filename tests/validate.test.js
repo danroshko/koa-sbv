@@ -133,7 +133,7 @@ test('array length', () => {
   const ctx = makeCtx({ a: [1, 2, 3] })
 
   expect(() => {
-    ctx.validate({ a: ['int', 5] })
+    ctx.validate({ a: ['int', { min: 5 }] })
   }).toThrow('expecting a to contain no less than 5 elements')
 })
 

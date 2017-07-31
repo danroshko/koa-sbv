@@ -42,15 +42,24 @@ function validate (data, spec, name) {
   }
 
   if (Array.isArray(spec)) {
-    const min = spec[1] || 0
-    const max = spec[2] || 10000
+    const options = spec[1] || {}
+    const min = options.min || 0
+    const max = options.max
+    const len = options.len
     assert(Array.isArray(data), `expecting ${name} to be an array`)
 
     let msg = `expecting ${name} to contain no less than ${min} elements`
     assert(data.length >= min, msg)
 
-    msg = `expecting ${name} to contain less than ${max} elements`
-    assert(data.length <= max, msg)
+    if (max) {
+      msg = `expecting ${name} to contain less than ${max} elements`
+      assert(data.length <= max, msg)
+    }
+
+    if (len) {
+      msg = `expecting ${name} to contain exactly ${len} elements`
+      assert(data.length === len, msg)
+    }
 
     return data.map((row, i) => {
       return validate(row, spec[0], `${name}[${i}]`)
