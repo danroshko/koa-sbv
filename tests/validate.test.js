@@ -139,11 +139,18 @@ test('array length', () => {
 })
 
 test('out of range', () => {
-  const ctx = makeCtx({ a: 31 })
+  const ctx = makeCtx({ a: 31.5 })
 
   expect(() => {
     ctx.validate({ a: range(20, 30) })
-  }).toThrow('Invalid value for a, expecting number from 20 to 30')
+  }).toThrow('Invalid value for a, expecting value in range(20, 30, 0)')
+
+  expect(() => {
+    ctx.validate({ a: range(20, 40, 1) })
+  }).toThrow('Invalid value for a, expecting value in range(20, 40, 1)')
+
+  ctx.validate({ a: range(20, 40, 0.5) })
+  expect(ctx.request.body).toEqual({ a: 31.5 })
 })
 
 test('either', () => {
