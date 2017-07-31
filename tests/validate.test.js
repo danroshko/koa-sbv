@@ -1,5 +1,6 @@
 /* global test, expect */
 const validate = require('../src/validate')
+const assert = require('../src/assert')
 const { range } = require('../src/range')
 const { maybe } = require('../src/maybe')
 const { either } = require('../src/either')
@@ -165,4 +166,23 @@ test('either', () => {
   expect(() => {
     ctx.validate({ a: either(1, 2) })
   }).toThrow('Invalid value for a, expecting one of the following: 1,2')
+})
+
+test('functions', () => {
+  const ctx = makeCtx({ a: 8 })
+
+  function isEven (value, name) {
+    assert(value % 2 === 0, `${name} is not even`)
+  }
+
+  function isOdd (value, name) {
+    assert(value % 2 === 1, `${name} is not odd`)
+  }
+
+  expect(() => {
+    ctx.validate({ a: isOdd })
+  }).toThrow('a is not odd')
+
+  ctx.validate({ a: isEven })
+  expect(ctx.request.body).toEqual({ a: 8 })
 })

@@ -22,6 +22,16 @@ function validate (data, spec, name) {
 
   assert(data != null, `Missing required parameter ${name}`)
 
+  if (typeof spec === 'string') {
+    const validator = validators[spec]
+    if (typeof validator !== 'function') {
+      throw new Error('Unknown validator ' + spec)
+    }
+
+    validator(data, name)
+    return data
+  }
+
   if (spec instanceof Range) {
     return validateRange(data, spec, name)
   }
@@ -33,16 +43,6 @@ function validate (data, spec, name) {
   if (spec instanceof RegExp) {
     const msg = `Invalid value for ${name}, expecting string ${spec}`
     assert(typeof data === 'string' && spec.test(data), msg)
-    return data
-  }
-
-  if (typeof spec === 'string') {
-    const validator = validators[spec]
-    if (typeof validator !== 'function') {
-      throw new Error('Unknown validator ' + spec)
-    }
-
-    validator(data, name)
     return data
   }
 
@@ -84,6 +84,11 @@ function validate (data, spec, name) {
       }
     }
     return result
+  }
+
+  if (typeof spec === 'function') {
+    spec(data, name)
+    return data
   }
 
   throw new Error('Check your specification for ' + name)
