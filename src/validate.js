@@ -4,21 +4,19 @@ const { Maybe } = require('./maybe')
 const { Range, validateRange } = require('./range')
 const { Either, validateEither } = require('./either')
 
-module.exports = function (spec) {
-  const ctx = this
-  const data = ctx.request.body
+module.exports = validate
 
-  const isEmpty = !data || Object.keys(data).length === 0
-  assert(!isEmpty, 'Empty request body')
+function validate (data, spec, options = {}, name = '') {
+  const notStrict = options.notStrict || false
+  const parseNumbers = options.parseNumbers || false
+  const makeArrays = options.makeArrays || false
 
-  ctx.request.body = validate(data, spec)
-}
-
-function validate (data, spec, name) {
   if (spec instanceof Maybe) {
     spec = spec.value
     if (data == null) return null
   }
+
+  if (notStrict && data == null) return null
 
   assert(data != null, `Missing required parameter ${name}`)
 
@@ -28,8 +26,7 @@ function validate (data, spec, name) {
       throw new Error('Unknown validator ' + spec)
     }
 
-    validator(data, name)
-    return data
+    return validator(data, name, parseNumbers)
   }
 
   if (spec instanceof Range) {
@@ -47,11 +44,16 @@ function validate (data, spec, name) {
   }
 
   if (Array.isArray(spec)) {
-    const options = spec[1] || {}
-    const min = options.min || 0
-    const max = options.max
-    const len = options.len
-    assert(Array.isArray(data), `expecting ${name} to be an array`)
+    const arrayOptions = spec[1] || {}
+    const min = arrayOptions.min || 0
+    const max = arrayOptions.max
+    const len = arrayOptions.len
+
+    if (makeArrays && !Array.isArray(data)) {
+      data = [data]
+    } else {
+      assert(Array.isArray(data), `expecting ${name} to be an array`)
+    }
 
     let msg = `expecting ${name} to contain no less than ${min} elements`
     assert(data.length >= min, msg)
@@ -67,7 +69,7 @@ function validate (data, spec, name) {
     }
 
     return data.map((row, i) => {
-      return validate(row, spec[0], `${name}[${i}]`)
+      return validate(row, spec[0], options, `${name}[${i}]`)
     })
   }
 
@@ -78,7 +80,7 @@ function validate (data, spec, name) {
 
     for (let prop in spec) {
       const newName = name ? `${name}.${prop}` : prop
-      const value = validate(data[prop], spec[prop], newName)
+      const value = validate(data[prop], spec[prop], options, newName)
       if (value != null) {
         result[prop] = value
       }
@@ -91,5 +93,5 @@ function validate (data, spec, name) {
     return data
   }
 
-  throw new Error('Check your specification for ' + name)
+  throw new Error('Invalid description for ' + name)
 }
