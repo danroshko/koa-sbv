@@ -2,7 +2,9 @@ const assert = require('./assert')
 
 module.exports = {
   int (val, name, parseNumbers) {
-    if (parseNumbers) val = +val
+    if (parseNumbers && typeof val === 'string') {
+      val = +val
+    }
 
     const msg = `Invalid value for ${name}, expecting integer`
     assert(Number.isInteger(val), msg)
@@ -10,7 +12,9 @@ module.exports = {
   },
 
   uint (val, name, parseNumbers) {
-    if (parseNumbers) val = +val
+    if (parseNumbers && typeof val === 'string') {
+      val = +val
+    }
 
     const msg = `Invalid value for ${name}, expecting non-negative integer`
     assert(Number.isInteger(val) && val >= 0, msg)
@@ -18,7 +22,9 @@ module.exports = {
   },
 
   number (val, name, parseNumbers) {
-    if (parseNumbers) val = +val
+    if (parseNumbers && typeof val === 'string') {
+      val = +val
+    }
 
     const msg = `Invalid value for ${name}, expecting number`
     assert(typeof val === 'number', msg)
@@ -26,7 +32,9 @@ module.exports = {
   },
 
   float (val, name, parseNumbers) {
-    if (parseNumbers) val = +val
+    if (parseNumbers && typeof val === 'string') {
+      val = +val
+    }
 
     const msg = `Invalid value for ${name}, expecting number`
     assert(typeof val === 'number', msg)

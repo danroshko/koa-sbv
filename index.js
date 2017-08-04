@@ -19,13 +19,13 @@ exports.assert = assert
 
 function validateHelper (schema, options = {}) {
   const ctx = this
-  const data = ctx.request.body
+  const data = validate(ctx.request.body, schema, options)
 
   const isEmpty = !data || Object.keys(data).length === 0
   assert(!isEmpty, 'Empty request body')
 
-  ctx.request.body = validate(data, schema, options)
-  return ctx.request.body
+  ctx.request.body = data
+  return data
 }
 
 function validateQuery (schema, options = {}) {
