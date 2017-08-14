@@ -3,6 +3,7 @@ const validators = require('./validators')
 const { Maybe } = require('./maybe')
 const { Range, validateRange } = require('./range')
 const { Either, validateEither } = require('./either')
+const { Text, validateText } = require('./text')
 
 module.exports = validate
 
@@ -27,6 +28,10 @@ function validate (data, spec, options = {}, name = '') {
     }
 
     return validator(data, name, parseNumbers)
+  }
+
+  if (spec instanceof Text) {
+    return validateText(data, spec, name)
   }
 
   if (spec instanceof Range) {

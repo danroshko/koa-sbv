@@ -3,6 +3,7 @@ const assert = require('./src/assert')
 const { maybe } = require('./src/maybe')
 const { range } = require('./src/range')
 const { either } = require('./src/either')
+const { text } = require('./src/text')
 
 module.exports = exports = (ctx, next) => {
   ctx.validate = validateHelper
@@ -12,6 +13,7 @@ module.exports = exports = (ctx, next) => {
 }
 
 exports.validate = validate
+exports.text = text
 exports.maybe = maybe
 exports.range = range
 exports.either = either

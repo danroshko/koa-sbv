@@ -65,17 +65,5 @@ module.exports = {
     const re = /^[0-9a-fA-F]{24}$/
     assert(typeof val === 'string' && re.test(val), msg)
     return val
-  },
-
-  object (val, name) {
-    const msg = `Invalid value for ${name}, expecting object`
-    assert(typeof val === 'object' && val != null, msg)
-    return val
-  },
-
-  array (val, name) {
-    const msg = `Invalid value for ${name}, expecting array`
-    assert(Array.isArray(val), msg)
-    return val
   }
 }

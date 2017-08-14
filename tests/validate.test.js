@@ -4,6 +4,7 @@ const assert = require('../src/assert')
 const { range } = require('../src/range')
 const { maybe } = require('../src/maybe')
 const { either } = require('../src/either')
+const { text } = require('../src/text')
 
 test('basic validation', () => {
   const data = {
@@ -154,6 +155,34 @@ test('either', () => {
   expect(() => {
     validate(data, { a: either(1, 2) })
   }).toThrow('Invalid value for a, expecting one of the following: 1,2')
+})
+
+test('text', () => {
+  let spec = { a: text(10) }
+  let data = { a: '12345' }
+
+  expect(validate(data, spec)).toEqual(data)
+
+  data = { a: '12345678910' }
+  expect(() => {
+    validate(data, spec)
+  }).toThrow(
+    'Invalid value for a, expecting string from 0 to 10 characters long'
+  )
+
+  spec = { a: text(2, 3) }
+  expect(validate({ a: '123' }, spec)).toEqual({ a: '123' })
+
+  const expectedError =
+    'Invalid value for a, expecting string from 2 to 3 characters long'
+
+  expect(() => {
+    validate({ a: '1' }, spec)
+  }).toThrow(expectedError)
+
+  expect(() => {
+    validate({ a: '1234' }, spec)
+  }).toThrow(expectedError)
 })
 
 test('functions', () => {
