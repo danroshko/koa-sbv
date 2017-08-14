@@ -83,18 +83,22 @@ test('range', () => {
 })
 
 test('maybe', () => {
-  const data = {
+  let data = {
     a: '123',
     c: { d: ['d'] }
   }
 
-  const spec = {
+  let spec = {
     a: maybe('string'),
     b: maybe(['uint']),
     c: { d: maybe(['string']) }
   }
 
   expect(validate(data, spec)).toEqual(data)
+
+  data = { a: 1 }
+  spec = { a: maybe('int', 0), b: maybe('int', 0) }
+  expect(validate(data, spec)).toEqual({ a: 1, b: 0 })
 })
 
 test('required parameters', () => {

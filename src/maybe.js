@@ -1,10 +1,11 @@
 exports.Maybe = Maybe
 exports.maybe = maybe
 
-function Maybe (value) {
+function Maybe (value, defaultValue = null) {
   this.value = value
+  this.defaultValue = defaultValue
 }
 
-function maybe (value) {
-  return new Maybe(value)
+function maybe (value, defaultValue) {
+  return new Maybe(value, defaultValue)
 }

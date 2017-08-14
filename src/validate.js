@@ -13,8 +13,11 @@ function validate (data, spec, options = {}, name = '') {
   const makeArrays = options.makeArrays || false
 
   if (spec instanceof Maybe) {
+    if (data == null) {
+      return spec.defaultValue
+    }
+
     spec = spec.value
-    if (data == null) return null
   }
 
   if (notStrict && data == null) return null
