@@ -14,6 +14,9 @@ $ npm install koa-sbv --save
 One way is to use koa-sbv middleware that patches `ctx` object and makes `ctx.validate`
 and `ctx.validateQuery` available in next middleware functions.
 
+* every parameter that wasn't declared will be removed.
+* an error with 400 status code will be thrown if validation fails
+
 *Note: does't support koa 1.x*
 
 ```javascript
@@ -47,19 +50,28 @@ router.post('/', async (ctx) => {
 ```
 
 ## Examples
-**Basic validation**
-* all parameters are required by default, use `maybe` wrapper for optional parameters.
-* every parameter that wasn't declared will be removed.
-* an error with 400 status code and helpful message will be thrown if validation fails
-* available validators: `string`, `email`, `number`, `int`, `uint`, `boolean`, `RegExp`
-
+**String validation**
 ```javascript
-const { maybe } = require('koa-sbv')
+const { text } = require('koa-sbv')
 
 const validated = validate(body, {
-  a: 'string',
-  b: /^\d{5}$/,
-  c: maybe('number')
+  a: 'string',     // arbitrary string
+  b: text(20),     // string no longer than 20 characters
+  c: text(1, 10),  // from 1 to 10 characters long
+  d: /^\d{5}$/     // use RegExp for more advanced validation
+})
+```
+
+**Number validation**
+```javascript
+const { range } = require('koa-sbv')
+
+const validated = validate(body, {
+  a: 'number',          // arbitrary number
+  b: 'int',             // integer
+  c: 'uint',            // non-negative integer
+  d: range(0, 100)      // any number from 0 to 100
+  e: range(0, 100, 2)   // any even integer from 0 to 100
 })
 ```
 
@@ -76,24 +88,34 @@ const validated = validate(body, {
 const { maybe } = require('koa-sbv')
 
 validate(body, {
-  obj1: { name: 'string' },
-  obj2: maybe({ age: 'uint' }),
+  obj: { name: 'string', age: 'uint' },
   arr1: ['number'],
   arr2: ['number', { min: 1 }],
-  arr3: [maybe({ foo: 'string' }), { max: 10 }]
+  arr3: [{ foo: 'string' }, { max: 10 }]
 })
 ```
 
-**Range and either** - handy additional validators
-* `range(start, stop, step)`
-* `either(...args)`
+**Optional parameters**
+
+By default all parameters are required, use `maybe` wrapper for optional parameters
 
 ```javascript
-const { range, either } = require('koa-sbv')
+const { maybe } = require('koa-sbv')
 
 validate(body, {
-  range1: range(0, 100),
-  range2: range(0, 100, 1),
+  a: maybe('number'),
+  b: maybe('number', 0),     // second parameter is optional default value
+  c: maybe(['string'], [])
+})
+```
+
+**either, email, and ObjectId** - handy additional validators
+```javascript
+const { either } = require('koa-sbv')
+
+validate(body, {
+  email: 'email',
+  _id: 'ObjectId',      // mongodb ObjectId
   ans: either('yes', 'no', true, false)
 })
 ```
@@ -129,5 +151,5 @@ const options = {
 validate(data, schema, options)
 ```
 * `notStrict` - make every parameter optional (otherwise it would be necessary to wrap everything in `maybe`)
-* `parseNumbers` - try to parse arguments as numbers if they where declared as `number`, `int`, or `uint`
-* `makeArrays` - make arrays from parameters if they were described as arrays
+* `parseNumbers` - try to parse arguments as numbers if they where declared as `number`, `int`, or `uint` (e.g. `'1' => 1, 'foo' => validation error`)
+* `makeArrays` - make arrays from parameters if they were described as arrays (e.g. `'1' => ['1'], ['1', '2'] => ['1', '2']`)
