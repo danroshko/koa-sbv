@@ -1,6 +1,6 @@
 const assert = require('./assert')
 
-module.exports = {
+const validators = {
   int (val, name, parseNumbers) {
     if (parseNumbers && typeof val === 'string') {
       val = +val
@@ -67,3 +67,15 @@ module.exports = {
     return val
   }
 }
+
+/**
+ * Define new validation rule
+ * @param {String} name
+ * @param {Function} func
+ */
+function define (name, func) {
+  validators[name] = func
+}
+
+exports.validators = validators
+exports.define = define

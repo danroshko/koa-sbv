@@ -1,5 +1,5 @@
 const assert = require('./assert')
-const validators = require('./validators')
+const { validators } = require('./validators')
 const { Maybe } = require('./maybe')
 const { Range, validateRange } = require('./range')
 const { Either, validateEither } = require('./either')
@@ -94,11 +94,6 @@ function validate (data, spec, options = {}, name = '') {
       }
     }
     return result
-  }
-
-  if (typeof spec === 'function') {
-    spec(data, name)
-    return data
   }
 
   throw new Error('Invalid description for ' + name)

@@ -4,22 +4,9 @@ const { maybe } = require('./src/maybe')
 const { range } = require('./src/range')
 const { either } = require('./src/either')
 const { text } = require('./src/text')
+const { define } = require('./src/validators')
 
-module.exports = exports = (ctx, next) => {
-  ctx.validate = validateHelper
-  ctx.validateQuery = validateQuery
-
-  return next()
-}
-
-exports.validate = validate
-exports.text = text
-exports.maybe = maybe
-exports.range = range
-exports.either = either
-exports.assert = assert
-
-function validateHelper (schema, options = {}) {
+function validationHelper (schema, options = {}) {
   const ctx = this
   const data = validate(ctx.request.body, schema, options)
 
@@ -30,21 +17,15 @@ function validateHelper (schema, options = {}) {
   return data
 }
 
-function validateQuery (schema, options = {}) {
-  const ctx = this
-
-  if (options.parseNumbers == null) {
-    options.parseNumbers = true
-  }
-
-  if (options.makeArrays == null) {
-    options.makeArrays = true
-  }
-
-  if (options.notStrict == null) {
-    options.notStrict = true
-  }
-
-  ctx.query = validate(ctx.query, schema, options)
-  return ctx.query
+exports.middleware = (ctx, next) => {
+  ctx.validate = validationHelper
+  return next()
 }
+
+exports.validate = validate
+exports.text = text
+exports.maybe = maybe
+exports.range = range
+exports.either = either
+exports.assert = assert
+exports.define = define

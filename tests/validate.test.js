@@ -5,6 +5,7 @@ const { range } = require('../src/range')
 const { maybe } = require('../src/maybe')
 const { either } = require('../src/either')
 const { text } = require('../src/text')
+const { define } = require('../src/validators')
 
 test('basic validation', () => {
   const data = {
@@ -189,24 +190,6 @@ test('text', () => {
   }).toThrow(expectedError)
 })
 
-test('functions', () => {
-  const data = { a: 8 }
-
-  function isEven (value, name) {
-    assert(value % 2 === 0, `${name} is not even`)
-  }
-
-  function isOdd (value, name) {
-    assert(value % 2 === 1, `${name} is not odd`)
-  }
-
-  expect(() => {
-    validate(data, { a: isOdd })
-  }).toThrow('a is not odd')
-
-  expect(validate(data, { a: isEven })).toEqual({ a: 8 })
-})
-
 test('options', () => {
   let data = { a: 1 }
   let spec = { a: 'int', b: 'int' }
@@ -222,4 +205,19 @@ test('options', () => {
   spec = { a: ['number'] }
   options = { parseNumbers: true, makeArrays: true }
   expect(validate(data, spec, options)).toEqual({ a: [0.01] })
+})
+
+test('define new validators', () => {
+  define('smallNumber', (val, name) => {
+    assert(val < 20, `${name} is bigger than 20`)
+    return val
+  })
+
+  const data = { a: 17, b: 30 }
+
+  expect(validate(data, { a: 'smallNumber' })).toEqual({ a: 17 })
+
+  expect(() => {
+    validate(data, { b: 'smallNumber' })
+  }).toThrow('b is bigger than 20')
 })
