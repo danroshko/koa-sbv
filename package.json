@@ -1,8 +1,11 @@
 {
   "name": "koa-sbv",
   "version": "0.6.0",
-  "description": "Simple and concise body validation middleware for koa",
+  "description": "Declarative schema validation for koa",
   "main": "index.js",
+  "engines": {
+    "node": "^8.9.0"
+  },
   "scripts": {
     "test": "jest"
   },
@@ -21,13 +24,13 @@
   },
   "homepage": "https://github.com/danroshko/koa-sbv#readme",
   "devDependencies": {
-    "eslint": "^4.2.0",
+    "eslint": "^4.13.1",
     "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.6.1",
-    "eslint-plugin-node": "^5.1.0",
-    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
-    "jest": "^20.0.4",
-    "prettier": "^1.5.2"
+    "jest": "^21.2.1",
+    "prettier": "^1.9.2"
   }
 }

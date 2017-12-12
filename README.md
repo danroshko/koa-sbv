@@ -9,13 +9,13 @@ $ npm install koa-sbv --save
 ```
 
 ## Usage
+* every parameter that wasn't declared will be removed.
+* an error with 400 status code will be thrown if validation fails
+
 **More convenient way**
 
 One way is to use koa-sbv middleware that patches `ctx` object and makes `ctx.validate`
 and `ctx.validateQuery` available in next middleware functions.
-
-* every parameter that wasn't declared will be removed.
-* an error with 400 status code will be thrown if validation fails
 
 *Note: does't support koa 1.x*
 
