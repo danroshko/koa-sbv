@@ -128,12 +128,12 @@ validate(body, {
 ```javascript
 const sbv = require('koa-sbv');
 
-sbv.define('isEven', (name, value) => {
+sbv.define('isEven', (value, name) => {
   sbv.assert(value % 2 === 0, `${name} is not even`);
   return value;
 });
 
-sbv.define('isOdd', (name, value) => {
+sbv.define('isOdd', (value, name) => {
   sbv.assert(value % 2 === 1, `${name} is not odd`);
   return value;
 });
