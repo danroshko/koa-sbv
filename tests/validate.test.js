@@ -171,15 +171,12 @@ test('text', () => {
   data = { a: '12345678910' }
   expect(() => {
     validate(data, spec)
-  }).toThrow(
-    'Invalid value for a, expecting string from 0 to 10 characters long'
-  )
+  }).toThrow('Invalid value for a, expecting string from 0 to 10 characters long')
 
   spec = { a: text(2, 3) }
   expect(validate({ a: '123' }, spec)).toEqual({ a: '123' })
 
-  const expectedError =
-    'Invalid value for a, expecting string from 2 to 3 characters long'
+  const expectedError = 'Invalid value for a, expecting string from 2 to 3 characters long'
 
   expect(() => {
     validate({ a: '1' }, spec)

@@ -27,18 +27,12 @@ const validators = {
     }
 
     const msg = `Invalid value for ${name}, expecting number`
-    assert(typeof val === 'number', msg)
+    assert(typeof val === 'number' && !Number.isNaN(val), msg)
     return val
   },
 
   float (val, name, parseNumbers) {
-    if (parseNumbers && typeof val === 'string') {
-      val = +val
-    }
-
-    const msg = `Invalid value for ${name}, expecting number`
-    assert(typeof val === 'number', msg)
-    return val
+    return this.number(val, name, parseNumbers)
   },
 
   string (val, name) {
