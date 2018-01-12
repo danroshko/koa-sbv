@@ -1,10 +1,8 @@
 /* global test, expect */
 const validate = require('../src/validate')
 const assert = require('../src/assert')
-const { range } = require('../src/range')
+const types = require('../src/types')
 const { maybe } = require('../src/maybe')
-const { either } = require('../src/either')
-const { text } = require('../src/text')
 const { define } = require('../src/validators')
 
 test('basic validation', () => {
@@ -69,15 +67,15 @@ test('filters unspecified properties', () => {
   })
 })
 
-test('range', () => {
+test('number and int', () => {
   const data = {
     a: 0.33333333333,
     b: 42
   }
 
   const spec = {
-    a: range(0, 1),
-    b: range(0, 100, true)
+    a: types.number({ min: 0, max: 1 }),
+    b: types.int({ min: 0, max: 100 })
   }
 
   expect(validate(data, spec)).toEqual(data)
@@ -137,33 +135,30 @@ test('out of range', () => {
   const data = { a: 31.5 }
 
   expect(() => {
-    validate(data, { a: range(20, 30) })
-  }).toThrow('Invalid value for a, expecting value in range(20, 30, 0)')
+    validate(data, { a: types.number({ min: 20, max: 30 }) })
+  }).toThrow('Invalid value for a, expecting number from 20 to 30')
 
   expect(() => {
-    validate(data, { a: range(20, 40, 1) })
-  }).toThrow('Invalid value for a, expecting value in range(20, 40, 1)')
-
-  const spec = { a: range(20, 40, 0.5) }
-  expect(validate(data, spec)).toEqual({ a: 31.5 })
+    validate(data, { a: types.int({ min: 20, max: 40 }) })
+  }).toThrow('Invalid value for a, expecting integer from 20 to 40')
 })
 
-test('either', () => {
+test('enum', () => {
   const data = { a: 'yes' }
 
   const spec = {
-    a: either('yes', 'no', true, false)
+    a: types.enum('yes', 'no', true, false)
   }
 
   expect(validate(data, spec)).toEqual({ a: 'yes' })
 
   expect(() => {
-    validate(data, { a: either(1, 2) })
+    validate(data, { a: types.enum(1, 2) })
   }).toThrow('Invalid value for a, expecting one of the following: 1,2')
 })
 
-test('text', () => {
-  let spec = { a: text(10) }
+test('string', () => {
+  let spec = { a: types.string({ max: 10 }) }
   let data = { a: '12345' }
 
   expect(validate(data, spec)).toEqual(data)
@@ -173,7 +168,7 @@ test('text', () => {
     validate(data, spec)
   }).toThrow('Invalid value for a, expecting string from 0 to 10 characters long')
 
-  spec = { a: text(2, 3) }
+  spec = { a: types.string({ min: 2, max: 3 }) }
   expect(validate({ a: '123' }, spec)).toEqual({ a: '123' })
 
   const expectedError = 'Invalid value for a, expecting string from 2 to 3 characters long'

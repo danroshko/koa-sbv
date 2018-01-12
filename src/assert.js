@@ -1,8 +1,18 @@
 module.exports = function (value, msg) {
-  if (value) return
+  if (!value) {
+    throw new ValidationError(msg)
+  }
+}
 
-  const err = new Error(msg)
-  err.status = 400
-  err.expose = true
-  throw err
+class ValidationError extends Error {
+  constructor (message) {
+    super(message)
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ValidationError)
+    }
+
+    this.status = 400
+    this.expose = true
+  }
 }

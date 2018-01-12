@@ -1,9 +1,7 @@
 const assert = require('./assert')
 const { validators } = require('./validators')
 const { Maybe } = require('./maybe')
-const { Range, validateRange } = require('./range')
-const { Either, validateEither } = require('./either')
-const { Text, validateText } = require('./text')
+const { SbvType } = require('./types')
 
 module.exports = validate
 
@@ -33,16 +31,8 @@ function validate (data, spec, options = {}, name = '') {
     return validator(data, name, parseNumbers)
   }
 
-  if (spec instanceof Text) {
-    return validateText(data, spec, name)
-  }
-
-  if (spec instanceof Range) {
-    return validateRange(data, spec, name)
-  }
-
-  if (spec instanceof Either) {
-    return validateEither(data, spec, name)
+  if (spec instanceof SbvType) {
+    return spec.validate(data, name)
   }
 
   if (spec instanceof RegExp) {

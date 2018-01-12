@@ -20,20 +20,19 @@ npm install koa-sbv --save
 One way is to use koa-sbv middleware that patches `ctx` object and makes `ctx.validate` available in next middleware functions.
 
 ```javascript
-const Koa = require('koa')
-const parser = require('koa-body')
-const sbv = require('koa-sbv')
+const Koa = require('koa');
+const parser = require('koa-body');
+const sbv = require('koa-sbv');
 
-const app = new Koa()
+const app = new Koa();
 
-app.use(parser()).use(sbv.middleware)
+app.use(parser()).use(sbv.middleware);
 
-...
+/* ... */
 
-router.post('/', async (ctx) => {
-  ctx.validate(bodySchema)
-})
-
+router.post('/', async ctx => {
+  ctx.validate(bodySchema);
+});
 ```
 
 ### More functional way
@@ -41,12 +40,12 @@ router.post('/', async (ctx) => {
 Alternative option is to use pure validation function and manually pass request body or query.
 
 ```javascript
-const { validate } = require('koa-sbv')
+const { validate } = require('koa-sbv');
 
-router.post('/', async (ctx) => {
-  const body = validate(ctx.request.body, bodySchema, options)
-  const query = validate(ctx.query, querySchema, options)
-})
+router.post('/', async ctx => {
+  const body = validate(ctx.request.body, bodySchema, options);
+  const query = validate(ctx.query, querySchema, options);
+});
 ```
 
 ## Examples
@@ -54,28 +53,27 @@ router.post('/', async (ctx) => {
 ### String validation
 
 ```javascript
-const { text } = require('koa-sbv')
+const sbv = require('koa-sbv');
 
 const validated = validate(body, {
-  a: 'string',     // arbitrary string
-  b: text(20),     // string no longer than 20 characters
-  c: text(1, 10),  // from 1 to 10 characters long
-  d: /^\d{5}$/     // use RegExp for more advanced validation
-})
+  a: 'string', // arbitrary string
+  c: sbv.string({ min: 1, max: 10 }), // from 1 to 10 characters long
+  d: /^\d{5}$/ // use RegExp for more advanced validation
+});
 ```
 
 ### Number validation
 
 ```javascript
-const { range } = require('koa-sbv')
+const sbv = require('koa-sbv');
 
 const validated = validate(body, {
-  a: 'number',          // arbitrary number
-  b: 'int',             // integer
-  c: 'uint',            // non-negative integer
-  d: range(0, 100)      // any number from 0 to 100
-  e: range(0, 100, 2)   // any even integer from 0 to 100
-})
+  a: 'number', // arbitrary number
+  b: 'int', // integer
+  c: 'uint', // non-negative integer
+  d: sbv.number({ min: 0, max: 100 }), // any number from 0 to 100
+  e: sbv.int({ max: 100 }) // any integer less than or equal 100
+});
 ```
 
 ### Arrays and objects
@@ -89,14 +87,14 @@ const validated = validate(body, {
 * description can be nested as deep as necessary
 
 ```javascript
-const { maybe } = require('koa-sbv')
+const { maybe } = require('koa-sbv');
 
 validate(body, {
   obj: { name: 'string', age: 'uint' },
   arr1: ['number'],
   arr2: ['number', { min: 1 }],
   arr3: [{ foo: 'string' }, { max: 10 }]
-})
+});
 ```
 
 ### Optional parameters
@@ -104,46 +102,46 @@ validate(body, {
 By default all parameters are required, use `maybe` wrapper for optional parameters
 
 ```javascript
-const { maybe } = require('koa-sbv')
+const { maybe } = require('koa-sbv');
 
 validate(body, {
   a: maybe('number'),
-  b: maybe('number', 0),     // second parameter is optional default value
+  b: maybe('number', 0), // second parameter is optional default value
   c: maybe(['string'], [])
-})
+});
 ```
 
-### either, email, and ObjectId
+### enum, email, and ObjectId
 
 ```javascript
-const { either } = require('koa-sbv')
+const sbv = require('koa-sbv');
 
 validate(body, {
   email: 'email',
-  _id: 'ObjectId',      // mongodb ObjectId
-  ans: either('yes', 'no', true, false)
-})
+  _id: 'ObjectId', // mongodb ObjectId
+  ans: sbv.enum('yes', 'no', true, false)
+});
 ```
 
 ### Custom validators
 
 ```javascript
-const sbv = require('koa-sbv')
+const sbv = require('koa-sbv');
 
 sbv.define('isEven', (name, value) => {
-  sbv.assert(value % 2 === 0, `${name} is not even`)
-  return value
-})
+  sbv.assert(value % 2 === 0, `${name} is not even`);
+  return value;
+});
 
 sbv.define('isOdd', (name, value) => {
-  sbv.assert(value % 2 === 1, `${name} is not odd`)
-  return value
-})
+  sbv.assert(value % 2 === 1, `${name} is not odd`);
+  return value;
+});
 
 validate(body, {
   a: 'isEven',
   b: ['isOdd', { len: 10 }]
-})
+});
 ```
 
 ### Options object
@@ -155,9 +153,9 @@ const options = {
   notStrict: true,
   parseNumbers: true,
   makeArrays: true
-}
+};
 
-validate(data, schema, options)
+validate(data, schema, options);
 ```
 
 * `notStrict` - make every parameter optional (otherwise it would be necessary to wrap everything in `maybe`)

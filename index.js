@@ -1,9 +1,7 @@
 const validate = require('./src/validate')
 const assert = require('./src/assert')
+const types = require('./src/types')
 const { maybe } = require('./src/maybe')
-const { range } = require('./src/range')
-const { either } = require('./src/either')
-const { text } = require('./src/text')
 const { define } = require('./src/validators')
 
 function validationHelper (schema, options = {}) {
@@ -23,9 +21,10 @@ exports.middleware = (ctx, next) => {
 }
 
 exports.validate = validate
-exports.text = text
 exports.maybe = maybe
-exports.range = range
-exports.either = either
 exports.assert = assert
 exports.define = define
+exports.enum = types.enum
+exports.string = types.string
+exports.number = types.number
+exports.int = types.int
