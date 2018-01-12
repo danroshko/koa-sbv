@@ -22,7 +22,9 @@ function text (arg1, arg2) {
 }
 
 function validateText (data, text, name) {
-  const msg = `Invalid value for ${name}, expecting string from ${text.min} to ${text.max} characters long`
+  const msg = `Invalid value for ${name}, expecting string from ${text.min} to ${
+    text.max
+  } characters long`
 
   assert(typeof data === 'string', msg)
   assert(data.length >= text.min && data.length <= text.max, msg)
