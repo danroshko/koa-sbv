@@ -44,7 +44,7 @@ function validate (data, spec, options = {}, name = '') {
   if (Array.isArray(spec)) {
     const arrayOptions = spec[1] || {}
     const min = arrayOptions.min || 0
-    const max = arrayOptions.max
+    const max = arrayOptions.max || 1e3
     const len = arrayOptions.len
 
     if (makeArrays && !Array.isArray(data)) {
@@ -56,12 +56,10 @@ function validate (data, spec, options = {}, name = '') {
     let msg = `expecting ${name} to contain no less than ${min} elements`
     assert(data.length >= min, msg)
 
-    if (max) {
-      msg = `expecting ${name} to contain less than ${max} elements`
-      assert(data.length <= max, msg)
-    }
+    msg = `expecting ${name} to contain less than ${max} elements`
+    assert(data.length <= max, msg)
 
-    if (len) {
+    if (len != null) {
       msg = `expecting ${name} to contain exactly ${len} elements`
       assert(data.length === len, msg)
     }

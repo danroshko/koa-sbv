@@ -37,15 +37,17 @@ const validators = {
 
   string (val, name) {
     const msg = `Invalid value for ${name}, expecting string`
-    assert(typeof val === 'string', msg)
+    assert(typeof val === 'string' && val.length < 1e4, msg)
     return val
   },
 
   email (val, name) {
     const msg = `Invalid value for ${name}, expecting valid email address`
     const re = /^[A-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[A-Z0-9.-]+$/i
-    assert(typeof val === 'string' && re.test(val), msg)
-    return val
+
+    assert(typeof val === 'string' && val.length < 254 && re.test(val), msg)
+
+    return val.toLowerCase()
   },
 
   boolean (val, name) {

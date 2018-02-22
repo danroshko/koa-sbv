@@ -24,7 +24,7 @@ class SbvString extends SbvType {
   constructor ({ min, max }) {
     super()
     this.min = min || 0
-    this.max = max || Number.POSITIVE_INFINITY
+    this.max = max || 1e4
   }
 
   validate (data, name) {
