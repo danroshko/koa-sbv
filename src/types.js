@@ -75,7 +75,7 @@ class SbvInteger extends SbvType {
 
 exports.SbvType = SbvType
 
-exports.enum = (...values) => {
+exports.oneOf = (...values) => {
   return new SbvEnum(...values)
 }
 

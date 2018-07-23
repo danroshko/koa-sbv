@@ -4,7 +4,7 @@ const { middleware } = require('../index')
 test('middleware should patch ctx', () => {
   const ctx = {}
 
-  middleware(ctx, () => {
+  middleware(ctx, async () => {
     expect(typeof ctx.validate).toBe('function')
   })
 })
@@ -14,7 +14,7 @@ test('validate', () => {
     request: { body: { a: 1, b: 2 } }
   }
 
-  middleware(ctx, () => {
+  middleware(ctx, async () => {
     ctx.validate({ a: 'number' })
     expect(ctx.request.body).toEqual({ a: 1 })
   })

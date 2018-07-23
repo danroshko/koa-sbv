@@ -3,6 +3,7 @@
   "version": "0.9.0",
   "description": "Declarative schema validation for koa",
   "main": "index.js",
+  "types": "index.d.ts",
   "engines": {
     "node": "^8.9.0"
   },
@@ -25,13 +26,13 @@
   },
   "homepage": "https://github.com/danroshko/koa-sbv#readme",
   "devDependencies": {
-    "eslint": "^4.15.0",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^5.2.1",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "jest": "^22.0.6",
-    "prettier": "^1.10.2"
+    "eslint": "^5.2.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "jest": "^23.4.1",
+    "prettier": "^1.13.7"
   }
 }

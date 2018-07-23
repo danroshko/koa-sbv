@@ -147,13 +147,13 @@ test('enum', () => {
   const data = { a: 'yes' }
 
   const spec = {
-    a: types.enum('yes', 'no', true, false)
+    a: types.oneOf('yes', 'no', true, false)
   }
 
   expect(validate(data, spec)).toEqual({ a: 'yes' })
 
   expect(() => {
-    validate(data, { a: types.enum(1, 2) })
+    validate(data, { a: types.oneOf(1, 2) })
   }).toThrow('Invalid value for a, expecting one of the following: 1,2')
 })
 
