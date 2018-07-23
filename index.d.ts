@@ -10,7 +10,7 @@ interface IValidateOptions {
 
 export function maybe(value: any, defaultValue?: any): Maybe
 
-class Maybe {
+declare class Maybe {
   constructor(value: any, defaultValue?: any)
 }
 
@@ -20,18 +20,18 @@ export function define(name: string, func: ValidatorFunction): void
 
 type ValidatorFunction = (val: any, name: string) => any
 
-export function oneOf(values: any[]): SbvEnum
+export function oneOf(...values: any[]): SbvEnum
 export function string(options: ITypeOptions): SbvType
 export function number(options: ITypeOptions): SbvType
 export function int(options: ITypeOptions): SbvType
 
-class SbvType {
+declare class SbvType {
   constructor(options: ITypeOptions)
 
   validate(data: any, name: string): any
 }
 
-class SbvEnum extends SbvType {
+declare class SbvEnum extends SbvType {
   constructor(...values: any[])
 }
 

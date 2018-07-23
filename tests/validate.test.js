@@ -1,9 +1,6 @@
 /* global test, expect */
-const validate = require('../src/validate')
-const assert = require('../src/assert')
-const types = require('../src/types')
-const { maybe } = require('../src/maybe')
-const { define } = require('../src/validators')
+const sbv = require('../index')
+const { validate, assert, maybe, define } = sbv
 
 test('basic validation', () => {
   const data = {
@@ -74,29 +71,31 @@ test('number and int', () => {
   }
 
   const spec = {
-    a: types.number({ min: 0, max: 1 }),
-    b: types.int({ min: 0, max: 100 })
+    a: sbv.number({ min: 0, max: 1 }),
+    b: sbv.int({ min: 0, max: 100 })
   }
 
   expect(validate(data, spec)).toEqual(data)
 })
 
-test('maybe', () => {
-  let data = {
+test('maybe without default values', () => {
+  const data = {
     a: '123',
     c: { d: ['d'] }
   }
 
-  let spec = {
+  const spec = {
     a: maybe('string'),
     b: maybe(['uint']),
     c: { d: maybe(['string']) }
   }
 
   expect(validate(data, spec)).toEqual(data)
+})
 
-  data = { a: 1 }
-  spec = { a: maybe('int', 0), b: maybe('int', 0) }
+test('maybe with default values', () => {
+  const data = { a: 1 }
+  const spec = { a: maybe('int', 0), b: maybe('int', 0) }
   expect(validate(data, spec)).toEqual({ a: 1, b: 0 })
 })
 
@@ -135,11 +134,11 @@ test('out of range', () => {
   const data = { a: 31.5 }
 
   expect(() => {
-    validate(data, { a: types.number({ min: 20, max: 30 }) })
+    validate(data, { a: sbv.number({ min: 20, max: 30 }) })
   }).toThrow('Invalid value for a, expecting number from 20 to 30')
 
   expect(() => {
-    validate(data, { a: types.int({ min: 20, max: 40 }) })
+    validate(data, { a: sbv.int({ min: 20, max: 40 }) })
   }).toThrow('Invalid value for a, expecting integer from 20 to 40')
 })
 
@@ -147,18 +146,18 @@ test('enum', () => {
   const data = { a: 'yes' }
 
   const spec = {
-    a: types.oneOf('yes', 'no', true, false)
+    a: sbv.oneOf('yes', 'no', true, false)
   }
 
   expect(validate(data, spec)).toEqual({ a: 'yes' })
 
   expect(() => {
-    validate(data, { a: types.oneOf(1, 2) })
+    validate(data, { a: sbv.oneOf(1, 2) })
   }).toThrow('Invalid value for a, expecting one of the following: 1,2')
 })
 
 test('string', () => {
-  let spec = { a: types.string({ max: 10 }) }
+  let spec = { a: sbv.string({ max: 10 }) }
   let data = { a: '12345' }
 
   expect(validate(data, spec)).toEqual(data)
@@ -168,7 +167,7 @@ test('string', () => {
     validate(data, spec)
   }).toThrow('Invalid value for a, expecting string from 0 to 10 characters long')
 
-  spec = { a: types.string({ min: 2, max: 3 }) }
+  spec = { a: sbv.string({ min: 2, max: 3 }) }
   expect(validate({ a: '123' }, spec)).toEqual({ a: '123' })
 
   const expectedError = 'Invalid value for a, expecting string from 2 to 3 characters long'
@@ -182,20 +181,24 @@ test('string', () => {
   }).toThrow(expectedError)
 })
 
-test('options', () => {
-  let data = { a: 1 }
-  let spec = { a: 'int', b: 'int' }
-  let options = { notStrict: true }
+test('notStrict option', () => {
+  const data = { a: 1 }
+  const spec = { a: 'int', b: 'int' }
+  const options = { notStrict: true }
   expect(validate(data, spec, options)).toEqual({ a: 1 })
+})
 
-  data = { a: '999.4553' }
-  spec = { a: 'number' }
-  options = { parseNumbers: true }
+test('parseNumbers option', () => {
+  const data = { a: '999.4553' }
+  const spec = { a: 'number' }
+  const options = { parseNumbers: true }
   expect(validate(data, spec, options)).toEqual({ a: 999.4553 })
+})
 
-  data = { a: '0.01' }
-  spec = { a: ['number'] }
-  options = { parseNumbers: true, makeArrays: true }
+test('makeArrays option', () => {
+  const data = { a: '0.01' }
+  const spec = { a: ['number'] }
+  const options = { parseNumbers: true, makeArrays: true }
   expect(validate(data, spec, options)).toEqual({ a: [0.01] })
 })
 
