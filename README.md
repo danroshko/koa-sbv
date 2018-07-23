@@ -1,6 +1,7 @@
 # koa-sbv
 
-[![NPM](https://nodei.co/npm/koa-sbv.png)](https://npmjs.org/package/koa-sbv)
+[![Build Status](https://travis-ci.org/danroshko/koa-sbv.svg?branch=master)](https://travis-ci.org/danroshko/koa-sbv)
+[![npm version](https://badge.fury.io/js/koa-sbv.svg)](https://badge.fury.io/js/koa-sbv)
 
 Declarative body and query validation for koa that supports arbitrarily nested validation rules and tries to avoid verbosity of other packages.
 
