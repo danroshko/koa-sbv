@@ -78,6 +78,23 @@ test('number and int', () => {
   expect(validate(data, spec)).toEqual(data)
 })
 
+test('json allows arrays and objects', () => {
+  const data = {
+    a: { id: 42 },
+    b: [2, 3, 4]
+  }
+
+  const spec = { a: 'json', b: 'json' }
+  expect(validate(data, spec)).toEqual(data)
+})
+
+test('json does not allow primitive types', () => {
+  const data = { a: 8 }
+  const spec = { a: 'json' }
+
+  expect(() => validate(data, spec)).toThrow('Invalid value for a, expecting array or object')
+})
+
 test('maybe without default values', () => {
   const data = {
     a: '123',

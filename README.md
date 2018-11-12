@@ -21,19 +21,19 @@ npm install koa-sbv
 One way is to use koa-sbv middleware that patches `ctx` object and makes `ctx.validate` available in next middleware functions.
 
 ```javascript
-const Koa = require('koa');
-const parser = require('koa-body');
-const sbv = require('koa-sbv');
+const Koa = require('koa')
+const parser = require('koa-body')
+const sbv = require('koa-sbv')
 
-const app = new Koa();
+const app = new Koa()
 
-app.use(parser()).use(sbv.middleware);
+app.use(parser()).use(sbv.middleware)
 
 /* ... */
 
 router.post('/', async ctx => {
-  ctx.validate(bodySchema);
-});
+  ctx.validate(bodySchema)
+})
 ```
 
 ### More functional way
@@ -41,12 +41,12 @@ router.post('/', async ctx => {
 Alternative option is to use pure validation function and manually pass request body or query.
 
 ```javascript
-const { validate } = require('koa-sbv');
+const { validate } = require('koa-sbv')
 
 router.post('/', async ctx => {
-  const body = validate(ctx.request.body, bodySchema, options);
-  const query = validate(ctx.query, querySchema, options);
-});
+  const body = validate(ctx.request.body, bodySchema, options)
+  const query = validate(ctx.query, querySchema, options)
+})
 ```
 
 ## Examples
@@ -54,13 +54,13 @@ router.post('/', async ctx => {
 ### String validation
 
 ```javascript
-const sbv = require('koa-sbv');
+const sbv = require('koa-sbv')
 
 const validated = validate(body, {
   a: 'string', // arbitrary string
   c: sbv.string({ min: 1, max: 10 }), // from 1 to 10 characters long
-  d: /^\d{5}$/ // use RegExp for more advanced validation
-});
+  d: /^\d{5}$/, // use RegExp for more advanced validation
+})
 ```
 
 _Note:_ By default maximum allowed string length is 1e4, to allow longer strings explicitly pass `max` parameter.
@@ -68,15 +68,15 @@ _Note:_ By default maximum allowed string length is 1e4, to allow longer strings
 ### Number validation
 
 ```javascript
-const sbv = require('koa-sbv');
+const sbv = require('koa-sbv')
 
 const validated = validate(body, {
   a: 'number', // arbitrary number
   b: 'int', // integer
   c: 'uint', // non-negative integer
   d: sbv.number({ min: 0, max: 100 }), // any number from 0 to 100
-  e: sbv.int({ max: 100 }) // any integer less than or equal 100
-});
+  e: sbv.int({ max: 100 }), // any integer less than or equal 100
+})
 ```
 
 ### Arrays and objects
@@ -90,14 +90,14 @@ const validated = validate(body, {
 - description can be nested as deep as necessary
 
 ```javascript
-const { maybe } = require('koa-sbv');
+const { maybe } = require('koa-sbv')
 
 validate(body, {
   obj: { name: 'string', age: 'uint' },
   arr1: ['number'],
   arr2: ['number', { min: 1 }],
-  arr3: [{ foo: 'string' }, { max: 10 }]
-});
+  arr3: [{ foo: 'string' }, { max: 10 }],
+})
 ```
 
 ### Optional parameters
@@ -105,46 +105,47 @@ validate(body, {
 By default all parameters are required, use `maybe` wrapper for optional parameters
 
 ```javascript
-const { maybe } = require('koa-sbv');
+const { maybe } = require('koa-sbv')
 
 validate(body, {
   a: maybe('number'),
   b: maybe('number', 0), // second parameter is optional default value
-  c: maybe(['string'], [])
-});
+  c: maybe(['string'], []),
+})
 ```
 
-### oneOf, email, and ObjectId
+### json, oneOf, email, and ObjectId
 
 ```javascript
-const sbv = require('koa-sbv');
+const sbv = require('koa-sbv')
 
 validate(body, {
+  data: 'json', // any array or object
   email: 'email',
   _id: 'ObjectId', // mongodb ObjectId
-  ans: sbv.oneOf('yes', 'no', true, false)
-});
+  ans: sbv.oneOf('yes', 'no', true, false),
+})
 ```
 
 ### Custom validators
 
 ```javascript
-const sbv = require('koa-sbv');
+const sbv = require('koa-sbv')
 
 sbv.define('isEven', (value, name) => {
-  sbv.assert(value % 2 === 0, `${name} is not even`);
-  return value;
-});
+  sbv.assert(value % 2 === 0, `${name} is not even`)
+  return value
+})
 
 sbv.define('isOdd', (value, name) => {
-  sbv.assert(value % 2 === 1, `${name} is not odd`);
-  return value;
-});
+  sbv.assert(value % 2 === 1, `${name} is not odd`)
+  return value
+})
 
 validate(body, {
   a: 'isEven',
-  b: ['isOdd', { len: 10 }]
-});
+  b: ['isOdd', { len: 10 }],
+})
 ```
 
 ### Options object
@@ -155,10 +156,10 @@ By default all parameters are set to `false`
 const options = {
   notStrict: true,
   parseNumbers: true,
-  makeArrays: true
-};
+  makeArrays: true,
+}
 
-validate(data, schema, options);
+validate(data, schema, options)
 ```
 
 - `notStrict` - make every parameter optional (otherwise it would be necessary to wrap everything in `maybe`)

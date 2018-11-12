@@ -61,6 +61,12 @@ const validators = {
     const re = /^[0-9a-fA-F]{24}$/
     assert(typeof val === 'string' && re.test(val), msg)
     return val
+  },
+
+  json (val, name) {
+    const msg = `Invalid value for ${name}, expecting array or object`
+    assert(typeof val === 'object', msg)
+    return val
   }
 }
 
