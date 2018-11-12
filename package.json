@@ -1,6 +1,6 @@
 {
   "name": "koa-sbv",
-  "version": "0.10.2",
+  "version": "0.11.0",
   "description": "Declarative schema validation for koa",
   "main": "index.js",
   "types": "index.d.ts",
