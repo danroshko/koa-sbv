@@ -2,6 +2,7 @@ const assert = require('./assert')
 const { validators } = require('./validators')
 const { Maybe } = require('./maybe')
 const { SbvType } = require('./types')
+const { Nullable } = require('./nullable')
 
 module.exports = validate
 
@@ -11,14 +12,22 @@ function validate (data, spec, options = {}, name = '') {
   const makeArrays = options.makeArrays || false
 
   if (spec instanceof Maybe) {
-    if (data == null) {
+    if (data === undefined) {
       return spec.defaultValue
     }
 
     spec = spec.value
   }
 
-  if (notStrict && data == null) return null
+  if (spec instanceof Nullable) {
+    if (data === null) {
+      return null
+    }
+
+    spec = spec.value
+  }
+
+  if (notStrict && data === undefined) return undefined
 
   assert(data != null, `Missing required parameter ${name}`)
 
@@ -71,13 +80,13 @@ function validate (data, spec, options = {}, name = '') {
 
   if (typeof spec === 'object') {
     const result = {}
-    const msg = `expecting ${name} to be an object`
-    assert(typeof data === 'object', msg)
+    assert(typeof data === 'object', `expecting ${name} to be an object`)
 
     for (let prop in spec) {
       const newName = name ? `${name}.${prop}` : prop
       const value = validate(data[prop], spec[prop], options, newName)
-      if (value != null) {
+
+      if (value !== undefined) {
         result[prop] = value
       }
     }

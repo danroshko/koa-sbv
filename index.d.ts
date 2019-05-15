@@ -14,6 +14,12 @@ declare class Maybe {
   constructor(value: any, defaultValue?: any)
 }
 
+export function nullable(value: any): Nullable
+
+declare class Nullable {
+  constructor(value: any)
+}
+
 export function assert(value: any, msg: string): void
 
 export function define(name: string, func: ValidatorFunction): void

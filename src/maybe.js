@@ -1,5 +1,5 @@
 class Maybe {
-  constructor (value, defaultValue = null) {
+  constructor (value, defaultValue = undefined) {
     this.value = value
     this.defaultValue = defaultValue
   }

@@ -1,6 +1,6 @@
 /* global test, expect */
 const sbv = require('../index')
-const { validate, assert, maybe, define } = sbv
+const { validate, assert, maybe, nullable, define } = sbv
 
 test('basic validation', () => {
   const data = {
@@ -114,6 +114,18 @@ test('maybe with default values', () => {
   const data = { a: 1 }
   const spec = { a: maybe('int', 0), b: maybe('int', 0) }
   expect(validate(data, spec)).toEqual({ a: 1, b: 0 })
+})
+
+test('nullable allows nulls', () => {
+  const data = { a: 10, b: '123', c: null }
+
+  const spec = {
+    a: nullable('number'),
+    b: nullable('string'),
+    c: nullable('string')
+  }
+
+  expect(validate(data, spec)).toEqual({ a: 10, b: '123', c: null })
 })
 
 test('required parameters', () => {

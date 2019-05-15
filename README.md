@@ -114,6 +114,17 @@ validate(body, {
 })
 ```
 
+Also `null` values are considered invalid by default, use `nullable` wrapper to allow them
+
+```javascript
+const { nullable } = require('koa-sbv')
+
+validate(body, {
+  a: nullable('number'),
+  b: nullable(['string']),
+})
+```
+
 ### json, oneOf, email, and ObjectId
 
 ```javascript
