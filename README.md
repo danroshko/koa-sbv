@@ -125,7 +125,7 @@ validate(body, {
 })
 ```
 
-### json, oneOf, email, and ObjectId
+### Additional validators
 
 ```javascript
 const sbv = require('koa-sbv')
@@ -134,6 +134,7 @@ validate(body, {
   data: 'json', // any array or object
   email: 'email',
   _id: 'ObjectId', // mongodb ObjectId
+  id: 'uuid', // UUID version 1-5
   ans: sbv.oneOf('yes', 'no', true, false),
 })
 ```

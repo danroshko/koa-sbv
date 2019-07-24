@@ -1,4 +1,0 @@
-{
-  "extends": ["standard", "plugin:node/recommended"],
-  "plugins": ["standard", "node"]
-}

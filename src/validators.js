@@ -1,5 +1,9 @@
 const assert = require('./assert')
 
+const emailPattern = /^[A-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[A-Z0-9.-]+$/i
+const objectidPattern = /^[0-9a-fA-F]{24}$/
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+
 const validators = {
   int (val, name, parseNumbers) {
     if (parseNumbers && typeof val === 'string') {
@@ -43,9 +47,7 @@ const validators = {
 
   email (val, name) {
     const msg = `Invalid value for ${name}, expecting valid email address`
-    const re = /^[A-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[A-Z0-9.-]+$/i
-
-    assert(typeof val === 'string' && val.length < 254 && re.test(val), msg)
+    assert(typeof val === 'string' && val.length < 254 && emailPattern.test(val), msg)
 
     return val.toLowerCase()
   },
@@ -58,8 +60,13 @@ const validators = {
 
   ObjectId (val, name) {
     const msg = `Invalid value for ${name}, expecting 24 digit hexadecimal string`
-    const re = /^[0-9a-fA-F]{24}$/
-    assert(typeof val === 'string' && re.test(val), msg)
+    assert(typeof val === 'string' && objectidPattern.test(val), msg)
+    return val
+  },
+
+  uuid (val, name) {
+    const msg = `Invalid value for ${name}, expecting valid UUID`
+    assert(typeof val === 'string' && val.length === 36 && uuidPattern.test(val), msg)
     return val
   },
 

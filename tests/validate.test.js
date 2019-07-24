@@ -10,7 +10,7 @@ test('basic validation', () => {
     d: 11,
     e: false,
     f: 'aaaaaaaaaaaaaaaaaaaaaaaa',
-    g: '456789'
+    g: '456789',
   }
 
   const spec = {
@@ -20,7 +20,7 @@ test('basic validation', () => {
     d: 'uint',
     e: 'boolean',
     f: 'ObjectId',
-    g: /^\d+$/
+    g: /^\d+$/,
   }
 
   expect(validate(data, spec)).toEqual(data)
@@ -32,7 +32,7 @@ test('nested validation', () => {
     subtitle: 'Sub',
     pages: 600,
     tags: ['tag1', 'tag2'],
-    authors: [{ name: 'Bob', emails: ['bob@foo.baz'] }]
+    authors: [{ name: 'Bob', emails: ['bob@foo.baz'] }],
   }
 
   const spec = {
@@ -40,7 +40,7 @@ test('nested validation', () => {
     subtitle: 'string',
     pages: 'uint',
     tags: ['string', 1, 5],
-    authors: [{ name: 'string', emails: ['email'] }]
+    authors: [{ name: 'string', emails: ['email'] }],
   }
 
   expect(validate(data, spec)).toEqual(data)
@@ -50,29 +50,29 @@ test('filters unspecified properties', () => {
   const data = {
     a: 'a',
     b: { c: 1, d: 2 },
-    e: 'e'
+    e: 'e',
   }
 
   const spec = {
     a: 'string',
-    b: { c: 'number' }
+    b: { c: 'number' },
   }
 
   expect(validate(data, spec)).toEqual({
     a: 'a',
-    b: { c: 1 }
+    b: { c: 1 },
   })
 })
 
 test('number and int', () => {
   const data = {
     a: 0.33333333333,
-    b: 42
+    b: 42,
   }
 
   const spec = {
     a: sbv.number({ min: 0, max: 1 }),
-    b: sbv.int({ min: 0, max: 100 })
+    b: sbv.int({ min: 0, max: 100 }),
   }
 
   expect(validate(data, spec)).toEqual(data)
@@ -81,7 +81,7 @@ test('number and int', () => {
 test('json allows arrays and objects', () => {
   const data = {
     a: { id: 42 },
-    b: [2, 3, 4]
+    b: [2, 3, 4],
   }
 
   const spec = { a: 'json', b: 'json' }
@@ -98,13 +98,13 @@ test('json does not allow primitive types', () => {
 test('maybe without default values', () => {
   const data = {
     a: '123',
-    c: { d: ['d'] }
+    c: { d: ['d'] },
   }
 
   const spec = {
     a: maybe('string'),
     b: maybe(['uint']),
-    c: { d: maybe(['string']) }
+    c: { d: maybe(['string']) },
   }
 
   expect(validate(data, spec)).toEqual(data)
@@ -122,7 +122,7 @@ test('nullable allows nulls', () => {
   const spec = {
     a: nullable('number'),
     b: nullable('string'),
-    c: nullable('string')
+    c: nullable('string'),
   }
 
   expect(validate(data, spec)).toEqual({ a: 10, b: '123', c: null })
@@ -133,7 +133,7 @@ test('required parameters', () => {
 
   const spec = {
     a: 'int',
-    b: { c: 'int', d: 'int' }
+    b: { c: 'int', d: 'int' },
   }
 
   expect(() => {
@@ -175,7 +175,7 @@ test('enum', () => {
   const data = { a: 'yes' }
 
   const spec = {
-    a: sbv.oneOf('yes', 'no', true, false)
+    a: sbv.oneOf('yes', 'no', true, false),
   }
 
   expect(validate(data, spec)).toEqual({ a: 'yes' })
@@ -208,6 +208,30 @@ test('string', () => {
   expect(() => {
     validate({ a: '1234' }, spec)
   }).toThrow(expectedError)
+})
+
+test('uuid', () => {
+  let spec = { id: 'uuid' }
+
+  const data1 = { id: 'a528246f-d032-4b6c-b99f-b45193b09307' }
+  const data2 = { id: '3c297221-cacc-4f74-9618-08e7da0e1b54' }
+  const data3 = { id: '8ce553be-3969-4cce-87bd-75babdf43f93' }
+
+  expect(validate(data1, spec)).toEqual(data1)
+  expect(validate(data2, spec)).toEqual(data2)
+  expect(validate(data3, spec)).toEqual(data3)
+
+  expect(() => {
+    validate({ id: 'a528246f' }, spec)
+  }).toThrow('Invalid value for id, expecting valid UUID')
+
+  expect(() => {
+    validate({ id: 1234567 }, spec)
+  }).toThrow('Invalid value for id, expecting valid UUID')
+
+  expect(() => {
+    validate({ id: '8ce553be-zzzz-vvvv-eeee-75babdf43f93' }, spec)
+  }).toThrow('Invalid value for id, expecting valid UUID')
 })
 
 test('notStrict option', () => {
