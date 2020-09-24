@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/danroshko/koa-sbv#readme",
   "devDependencies": {
-    "@types/jest": "^24.0.15",
-    "jest": "^24.8.0"
+    "@types/jest": "^26.0.14",
+    "jest": "^26.4.2"
   }
 }

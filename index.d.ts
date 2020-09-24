@@ -20,6 +20,12 @@ declare class Nullable {
   constructor(value: any)
 }
 
+export function dict(keys: any, values: any): Dict
+
+declare class Dict {
+  constructor(keys: any, values: any)
+}
+
 export function assert(value: any, msg: string): void
 
 export function define(name: string, func: ValidatorFunction): void

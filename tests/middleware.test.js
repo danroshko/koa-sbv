@@ -11,7 +11,7 @@ test('middleware should patch ctx', () => {
 
 test('validate', () => {
   const ctx = {
-    request: { body: { a: 1, b: 2 } }
+    request: { body: { a: 1, b: 2 } },
   }
 
   middleware(ctx, async () => {

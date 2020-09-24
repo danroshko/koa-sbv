@@ -3,9 +3,10 @@ const assert = require('./src/assert')
 const types = require('./src/types')
 const { maybe } = require('./src/maybe')
 const { nullable } = require('./src/nullable')
+const { dict } = require('./src/dict')
 const { define } = require('./src/validators')
 
-function validationHelper (schema, options = {}) {
+function validationHelper(schema, options = {}) {
   const ctx = this
   const data = validate(ctx.request.body, schema, options)
 
@@ -22,6 +23,7 @@ exports.middleware = (ctx, next) => {
 }
 
 exports.validate = validate
+exports.dict = dict
 exports.maybe = maybe
 exports.nullable = nullable
 exports.assert = assert

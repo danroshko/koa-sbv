@@ -1,6 +1,6 @@
 /* global test, expect */
 const sbv = require('../index')
-const { validate, assert, maybe, nullable, define } = sbv
+const { validate, assert, maybe, nullable, dict, define } = sbv
 
 test('basic validation', () => {
   const data = {
@@ -232,6 +232,29 @@ test('uuid', () => {
   expect(() => {
     validate({ id: '8ce553be-zzzz-vvvv-eeee-75babdf43f93' }, spec)
   }).toThrow('Invalid value for id, expecting valid UUID')
+})
+
+test('dict', () => {
+  const spec = { props: dict('string', 'number') }
+
+  const data1 = { props: {} }
+  const data2 = { props: { a: 0 } }
+  const data3 = { props: { a: 0, b: 1, c: 2 } }
+
+  expect(validate(data1, spec)).toEqual(data1)
+  expect(validate(data2, spec)).toEqual(data2)
+  expect(validate(data3, spec)).toEqual(data3)
+
+  expect(() => {
+    validate({ props: { a: 'a' } }, spec)
+  }).toThrow('Invalid value for props.a, expecting number')
+
+  const spec2 = dict('string', ['string'])
+
+  const data4 = {}
+  const data5 = { foo: [], bar: ['1', '2', '3'] }
+  expect(validate(data4, spec2)).toEqual(data4)
+  expect(validate(data5, spec2)).toEqual(data5)
 })
 
 test('notStrict option', () => {

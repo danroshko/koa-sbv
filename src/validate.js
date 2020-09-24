@@ -1,12 +1,13 @@
 const assert = require('./assert')
 const { validators } = require('./validators')
+const { Dict } = require('./dict')
 const { Maybe } = require('./maybe')
-const { SbvType } = require('./types')
 const { Nullable } = require('./nullable')
+const { SbvType } = require('./types')
 
 module.exports = validate
 
-function validate (data, spec, options = {}, name = '') {
+function validate(data, spec, options = {}, name = '') {
   const notStrict = options.notStrict || false
   const parseNumbers = options.parseNumbers || false
   const makeArrays = options.makeArrays || false
@@ -76,6 +77,18 @@ function validate (data, spec, options = {}, name = '') {
     return data.map((row, i) => {
       return validate(row, spec[0], options, `${name}[${i}]`)
     })
+  }
+
+  if (spec instanceof Dict) {
+    const result = {}
+    assert(typeof data === 'object', `expecting ${name} to be an object`)
+
+    for (const [key, value] of Object.entries(data)) {
+      const newName = name ? `${name}.${key}` : key
+      validate(key, spec.keys, options, newName)
+      result[key] = validate(value, spec.values, options, newName)
+    }
+    return result
   }
 
   if (typeof spec === 'object') {

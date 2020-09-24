@@ -31,7 +31,7 @@ app.use(parser()).use(sbv.middleware)
 
 /* ... */
 
-router.post('/', async ctx => {
+router.post('/', async (ctx) => {
   ctx.validate(bodySchema)
 })
 ```
@@ -43,7 +43,7 @@ Alternative option is to use pure validation function and manually pass request 
 ```javascript
 const { validate } = require('koa-sbv')
 
-router.post('/', async ctx => {
+router.post('/', async (ctx) => {
   const body = validate(ctx.request.body, bodySchema, options)
   const query = validate(ctx.query, querySchema, options)
 })
@@ -88,15 +88,17 @@ const validated = validate(body, {
   - `max` - maximum allowed length, default 1e3
   - `len` - if an array should contain exactly `len` elements
 - description can be nested as deep as necessary
+- `dict` helper can be used to validate objects with arbitrary number of key/value pairs
 
 ```javascript
-const { maybe } = require('koa-sbv')
+const { maybe, dict } = require('koa-sbv')
 
 validate(body, {
   obj: { name: 'string', age: 'uint' },
   arr1: ['number'],
   arr2: ['number', { min: 1 }],
   arr3: [{ foo: 'string' }, { max: 10 }],
+  map: dict('string', 'number'),
 })
 ```
 
