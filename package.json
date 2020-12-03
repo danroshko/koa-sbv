@@ -4,12 +4,8 @@
   "description": "Declarative schema validation for koa",
   "main": "index.js",
   "types": "index.d.ts",
-  "engines": {
-    "node": "^8.9.0"
-  },
   "scripts": {
-    "test": "jest",
-    "lint": "eslint ."
+    "test": "jest"
   },
   "repository": {
     "type": "git",

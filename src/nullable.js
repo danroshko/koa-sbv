@@ -1,10 +1,10 @@
 class Nullable {
-  constructor (value) {
+  constructor(value) {
     this.value = value
   }
 }
 
-function nullable (value) {
+function nullable(value) {
   return new Nullable(value)
 }
 

@@ -5,7 +5,7 @@ module.exports = function (value, msg) {
 }
 
 class ValidationError extends Error {
-  constructor (message) {
+  constructor(message) {
     super(message)
 
     if (Error.captureStackTrace) {
