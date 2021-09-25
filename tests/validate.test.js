@@ -1,6 +1,6 @@
 /* global test, expect */
 const sbv = require('../index')
-const { validate, assert, maybe, nullable, dict, define } = sbv
+const { validate, assert, maybe, nullable, dict, define, setMaxArrLength } = sbv
 
 test('basic validation', () => {
   const data = {
@@ -291,4 +291,21 @@ test('define new validators', () => {
   expect(() => {
     validate(data, { b: 'smallNumber' })
   }).toThrow('b is bigger than 20')
+})
+
+test('default array length', () => {
+  setMaxArrLength(100)
+
+  const data = { a: new Array(90).fill(1) }
+  const spec = { a: ['number'] }
+  expect(validate(data, spec)).toEqual(data)
+
+  data.a = new Array(120).fill(1)
+  expect(() => validate(data, spec)).toThrow('expecting a to contain less than 100 elements')
+
+  setMaxArrLength(1e4)
+  expect(validate(data, spec)).toEqual(data)
+
+  data.a = new Array(2e4).fill(1)
+  expect(() => validate(data, spec)).toThrow('expecting a to contain less than 10000 elements')
 })

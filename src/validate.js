@@ -1,5 +1,5 @@
 const assert = require('./assert')
-const { validators } = require('./validators')
+const { defaults, validators } = require('./validators')
 const { Dict } = require('./dict')
 const { Maybe } = require('./maybe')
 const { Nullable } = require('./nullable')
@@ -54,7 +54,7 @@ function validate(data, spec, options = {}, name = '') {
   if (Array.isArray(spec)) {
     const arrayOptions = spec[1] || {}
     const min = arrayOptions.min || 0
-    const max = arrayOptions.max || 1e3
+    const max = arrayOptions.max || defaults.maxArrLength
     const len = arrayOptions.len
 
     if (makeArrays && !Array.isArray(data)) {

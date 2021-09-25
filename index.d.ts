@@ -32,6 +32,9 @@ export function define(name: string, func: ValidatorFunction): void
 
 type ValidatorFunction = (val: any, name: string) => any
 
+export function setMaxArrLength(value: number): void
+export function setMaxStrLength(value: number): void
+
 export function oneOf(...values: any[]): SbvEnum
 export function string(options: ITypeOptions): SbvType
 export function number(options: ITypeOptions): SbvType

@@ -4,7 +4,7 @@ const types = require('./src/types')
 const { maybe } = require('./src/maybe')
 const { nullable } = require('./src/nullable')
 const { dict } = require('./src/dict')
-const { define } = require('./src/validators')
+const { define, setMaxArrLength, setMaxStrLength } = require('./src/validators')
 
 function validationHelper(schema, options = {}) {
   const ctx = this
@@ -32,3 +32,5 @@ exports.oneOf = types.oneOf
 exports.string = types.string
 exports.number = types.number
 exports.int = types.int
+exports.setMaxArrLength = setMaxArrLength
+exports.setMaxStrLength = setMaxStrLength

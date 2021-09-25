@@ -4,6 +4,11 @@ const emailPattern = /^[A-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[A-Z0-9.-]+$/i
 const objectidPattern = /^[0-9a-fA-F]{24}$/
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
+const defaults = {
+  maxArrLength: 1e3,
+  maxStrLength: 1e4,
+}
+
 const validators = {
   int(val, name, parseNumbers) {
     if (parseNumbers && typeof val === 'string') {
@@ -41,7 +46,7 @@ const validators = {
 
   string(val, name) {
     const msg = `Invalid value for ${name}, expecting string`
-    assert(typeof val === 'string' && val.length < 1e4, msg)
+    assert(typeof val === 'string' && val.length <= defaults.maxStrLength, msg)
     return val
   },
 
@@ -86,5 +91,25 @@ function define(name, func) {
   validators[name] = func
 }
 
+/**
+ * Set default value for maximum array length
+ * @param {number} value 
+ */
+function setMaxArrLength(value) {
+  defaults.maxArrLength = value
+}
+
+/**
+ * Set default value for maximum string length
+ * @param {number} value 
+ */
+function setMaxStrLength(value) {
+  defaults.maxStrLength = value
+}
+
 exports.validators = validators
 exports.define = define
+
+exports.defaults = defaults
+exports.setMaxArrLength = setMaxArrLength
+exports.setMaxStrLength = setMaxStrLength
