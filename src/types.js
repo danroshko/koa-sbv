@@ -1,7 +1,7 @@
 const assert = require('./assert')
 
 class SbvType {
-  validate(data, name) {
+  validate(data, name, options) {
     throw new Error('Validation is not impemented')
   }
 }
@@ -44,13 +44,15 @@ class SbvNumber extends SbvType {
     this.max = max == null ? Number.POSITIVE_INFINITY : max
   }
 
-  validate(data, name) {
-    const msg = `Invalid value for ${name}, expecting number from ${this.min} to ${this.max}`
+  validate(data, name, options) {
+    const convertToNumber = options && options.parseNumbers && typeof data === 'string'
+    const value = convertToNumber ? +data : data
 
-    const valid = typeof data === 'number' && data >= this.min && data <= this.max
+    const valid = typeof value === 'number' && !Number.isNaN(value) && value >= this.min && value <= this.max
+    const msg = `Invalid value for ${name}, expecting number from ${this.min} to ${this.max}`
     assert(valid, msg)
 
-    return data
+    return value
   }
 }
 
@@ -61,13 +63,15 @@ class SbvInteger extends SbvType {
     this.max = max == null ? Number.POSITIVE_INFINITY : max
   }
 
-  validate(data, name) {
-    const msg = `Invalid value for ${name}, expecting integer from ${this.min} to ${this.max}`
+  validate(data, name, options) {
+    const convertToNumber = options && options.parseNumbers && typeof data === 'string'
+    const value = convertToNumber ? +data : data
 
-    const valid = Number.isInteger(data) && data >= this.min && data <= this.max
+    const valid = Number.isInteger(value) && value >= this.min && value <= this.max
+    const msg = `Invalid value for ${name}, expecting integer from ${this.min} to ${this.max}`
     assert(valid, msg)
 
-    return data
+    return value
   }
 }
 

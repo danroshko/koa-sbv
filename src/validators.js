@@ -11,33 +11,27 @@ const defaults = {
 
 const validators = {
   int(val, name, parseNumbers) {
-    if (parseNumbers && typeof val === 'string') {
-      val = +val
-    }
-
+    const value = parseNumbers && typeof val === 'string' ? +val : val
     const msg = `Invalid value for ${name}, expecting integer`
-    assert(Number.isInteger(val), msg)
-    return val
+    assert(Number.isInteger(value), msg)
+
+    return value
   },
 
   uint(val, name, parseNumbers) {
-    if (parseNumbers && typeof val === 'string') {
-      val = +val
-    }
-
+    const value = parseNumbers && typeof val === 'string' ? +val : val
     const msg = `Invalid value for ${name}, expecting non-negative integer`
-    assert(Number.isInteger(val) && val >= 0, msg)
-    return val
+    assert(Number.isInteger(value) && value >= 0, msg)
+
+    return value
   },
 
   number(val, name, parseNumbers) {
-    if (parseNumbers && typeof val === 'string') {
-      val = +val
-    }
-
+    const value = parseNumbers && typeof val === 'string' ? +val : val
     const msg = `Invalid value for ${name}, expecting number`
-    assert(typeof val === 'number' && !Number.isNaN(val), msg)
-    return val
+    assert(typeof value === 'number' && !Number.isNaN(value), msg)
+
+    return value
   },
 
   float(val, name, parseNumbers) {
@@ -93,7 +87,7 @@ function define(name, func) {
 
 /**
  * Set default value for maximum array length
- * @param {number} value 
+ * @param {number} value
  */
 function setMaxArrLength(value) {
   defaults.maxArrLength = value
@@ -101,7 +95,7 @@ function setMaxArrLength(value) {
 
 /**
  * Set default value for maximum string length
- * @param {number} value 
+ * @param {number} value
  */
 function setMaxStrLength(value) {
   defaults.maxStrLength = value

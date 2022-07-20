@@ -269,6 +269,10 @@ test('parseNumbers option', () => {
   const spec = { a: 'number' }
   const options = { parseNumbers: true }
   expect(validate(data, spec, options)).toEqual({ a: 999.4553 })
+
+  const data2 = { index: '100' }
+  const spec2 = { index: sbv.int({ min: 0, max: 1000 }) }
+  expect(validate(data2, spec2, options)).toEqual({ index: 100 })
 })
 
 test('makeArrays option', () => {

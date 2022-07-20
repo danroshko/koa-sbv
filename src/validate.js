@@ -42,7 +42,7 @@ function validate(data, spec, options = {}, name = '') {
   }
 
   if (spec instanceof SbvType) {
-    return spec.validate(data, name)
+    return spec.validate(data, name, options)
   }
 
   if (spec instanceof RegExp) {
@@ -80,7 +80,7 @@ function validate(data, spec, options = {}, name = '') {
   }
 
   if (spec instanceof Dict) {
-    const result = {}
+    const result = Object.create(null)
     assert(typeof data === 'object', `expecting ${name} to be an object`)
 
     for (const [key, value] of Object.entries(data)) {
@@ -92,7 +92,7 @@ function validate(data, spec, options = {}, name = '') {
   }
 
   if (typeof spec === 'object') {
-    const result = {}
+    const result = Object.create(null)
     assert(typeof data === 'object', `expecting ${name} to be an object`)
 
     for (let prop in spec) {

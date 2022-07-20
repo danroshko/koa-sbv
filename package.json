@@ -1,6 +1,6 @@
 {
   "name": "koa-sbv",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Declarative schema validation for koa",
   "main": "index.js",
   "types": "index.d.ts",
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/danroshko/koa-sbv#readme",
   "devDependencies": {
-    "@types/jest": "^27.0.2",
-    "jest": "^27.2.1"
+    "@types/jest": "^28.1.6",
+    "jest": "^28.1.3"
   }
 }
